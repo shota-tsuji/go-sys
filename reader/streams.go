@@ -15,20 +15,13 @@ var (
 
 func main() {
 	var stream io.Reader
-	lReaderC := io.LimitReader(computer, 1)
-	lReaderS := io.LimitReader(system, 1)
-	sectionReader := io.NewSectionReader(programming, 5, 4)
-	var bw bytes.Buffer// bytes.Reader
-	tee := io.TeeReader(sectionReader, &bw)
 
-	r, w := io.Pipe()
-	var br bytes.Reader
-	go func() {
-	}
+	sr1 := io.NewSectionReader(computer, 0, 1)
+	sr2 := io.NewSectionReader(system, 0, 1)
+	sr3 := io.NewSectionReader(programming, 5, 1)
+	sr4 := io.NewSectionReader(programming, 8, 1)
+	sr5 := io.NewSectionReader(programming, 8, 1)
+	stream = io.MultiReader(sr3, sr2, sr1, sr4, sr5)
 
-	//lr1 := io.LimitReader(&buffer, 
-	lr2 := io.NewSectionReader(tee, 3, 1)
-	//stream = io.MultiReader(programming, lReaderS, lReaderC)
-	stream = io.MultiReader(sectionReader, lReaderS, lReaderC, lr2)
 	io.Copy(os.Stdout, stream)
 }
